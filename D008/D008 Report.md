@@ -38,8 +38,10 @@
 
 ## 5. 전달용 차트 1개 (이미지 또는 코드 인용)
 - 차트 한 장 + "한 줄 메시지"
+
 ![hour_response_time_ms_결측 비율](chart/plot_hour_device.png)
 ![hour_response_time_ms_결측 비율](chart/ploty_hour_device.png)
+
 'device'에서 mobile이 desktop 보다 더 트래픽이 높은 것으로 확인되었음.
 3시 54.2%가 mobile이 desktop 대비 높게 확인되었으며 해당 시간이 최소 차이로 확인되었음.
 가장 높은 트래픽이 확인된 시간은 0시이며 desktop 대비 225%로 높은 것으로 확인되었음. 그 외 24시간 중 16개 시간에서 100%이상 트래픽이 높게 확인됨.
