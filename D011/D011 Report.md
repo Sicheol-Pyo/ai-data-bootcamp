@@ -8,22 +8,23 @@
 5. top 100개 식당 중 금연, 어린이 동반 가능, 카드 가능, 다국어 메뉴판, 디지털 메뉴판을 보유하고 있는 식당의 비율은 얼마나 될까?
 
 ## 수집대상
-URL : https://tabelog.com/kr/
-robots.txt 정보
-User-agent: *
-Disallow: /ad_mobile/ (모바일 광고)
-Disallow: /rvwr/*/visitdtl/ (개인 리뷰어 상세 페이지)
-Disallow: /yoyaku/tabelog_booking/ (예약 관련 페이지)
-Disallow: /blog/to_blog (블로그 이동 페이지)
-Disallow: /btb/ (특정 경로로 추정)
-Disallow: /*_disallow_bot (bot 제한)
-Disallow: /*_disallow_bot.js
+- URL : https://tabelog.com/kr/
+
+### robots.txt 정보
+- User-agent: *
+- Disallow: /ad_mobile/ (모바일 광고)
+- Disallow: /rvwr/*/visitdtl/ (개인 리뷰어 상세 페이지)
+- Disallow: /yoyaku/tabelog_booking/ (예약 관련 페이지)
+- Disallow: /blog/to_blog (블로그 이동 페이지)
+- Disallow: /btb/ (특정 경로로 추정)
+- Disallow: /*_disallow_bot (bot 제한)
+- Disallow: /*_disallow_bot.js
 
 ## 데이터 정보
-store_name / str / 업체명
-stat / str / 가장 가까운 역 및 음식 종류
-star / str / 별점
-info / str / 추가 정보
+- store_name / str / 업체명
+- stat / str / 가장 가까운 역 및 음식 종류
+- star / str / 별점
+- info / str / 추가 정보
 
 ## 데이터 품질 문제
 1. stat의 경우 '시부야역 358m / 야키니쿠, 내장구이, 이자카야'와 같이 '가장 가까운 역'과 '음식 종류'가 병합됨.
@@ -38,18 +39,19 @@ info / str / 추가 정보
 ## 분석 정보(시각화 자료 포함)
 1. 평점이 높을 수록 예약 순위가 높을까?
 ![각 도시별 rank, star 상관관계](chart/rank_star.png)
-tokyo: -0.159
-osaka: 0.027
-kyoto: -0.236
-fukuoka: -0.036
-hokkaido: -0.208
+- tokyo: -0.159
+- osaka: 0.027
+- kyoto: -0.236
+- fukuoka: -0.036
+- hokkaido: -0.208
 
 2. 주요 번화가에 맛집이 많이 있을까?
 ![각 도시별 맛집 Location 분포도](chart/location_s.png)
 
 3. top 100안에서 가장 있기 있는 메뉴는 무엇일까?
 ![각 도시별 top 인기 메뉴(상위 10%)](chart/menu_s.png)
-|순위|메뉴|건수| 
+|순위|메뉴|건수|
+|---|---|---|
 |1위|이자카야|208|
 |2위|야키니쿠|158|
 |3위|해물|121|
@@ -64,6 +66,7 @@ hokkaido: -0.208
 4. top 100개 식당 중 금연, 어린이 동반 가능, 카드 가능, 다국어 메뉴판, 디지털 메뉴판을 보유하고 있는 식당의 비율은 얼마나 될까?
 ![각 도시별 식당 정보 상세(상위 10%)](chart/info.png)
 |순위|정보|건수|
+|---|---|---|
 |1위|카드 가능|494|
 |2위|금연|369|
 |3위|어린이 동반 가능|313|
