@@ -162,7 +162,7 @@ SELECT
   round((LENGTH(review_content) - LENGTH(REPLACE(review_content, 'excellent', ''))) / LENGTH('excellent')
     - (LENGTH(review_content) - LENGTH(REPLACE(review_content, 'not excellent', ''))) / LENGTH('not excellent'),0) as excellent_count,
   round((LENGTH(review_content) - LENGTH(REPLACE(review_content, 'recommend', ''))) / LENGTH('recommend')
-    - (LENGTH(review_content) - LENGTH(REPLACE(review_content, '%don\'t recommend%', ''))) / LENGTH('%don\'t recommend%'),0) as recommend_count,
+    - (LENGTH(review_content) - LENGTH(REPLACE(review_content, 'don\'t recommend', ''))) / LENGTH('don\'t recommend'),0) as recommend_count,
   round((LENGTH(review_content) - LENGTH(REPLACE(review_content, 'worth', ''))) / LENGTH('worth')
     - (LENGTH(review_content) - LENGTH(REPLACE(review_content, 'not worth', ''))) / LENGTH('not worth'),0) as worth_count,
   round((LENGTH(review_content) - LENGTH(REPLACE(review_content, 'best', ''))) / LENGTH('best')       
@@ -170,6 +170,7 @@ SELECT
 FROM db02.amazon_clean
 where last_category = 'in-ear'
 order by rating desc
+
 
 SELECT 
   product_id, 
@@ -302,3 +303,7 @@ rating,
 rating_count
 from db02.amazon_clean
 order by rating desc
+
+
+select category
+from db02.amazon

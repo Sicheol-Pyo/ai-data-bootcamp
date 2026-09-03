@@ -26,6 +26,7 @@
 - 결측: product_id B0B94JPY2N, B0BQRJ3C47의 rating_count 결측
 - 이상치: product_id B08L12N5H1의 rating | 로 오기
 - 중복: 일부 product_id에서 img_link가 달라 중복 확인됨.
+- 특이사항: category의 값에 ‘|’를 기준으로 최대 6개까지 분류가 나눠지는 것으로 확인.
 
 ## 3. 처리 결정과 근거
 ### (1)discounted_price, actual_price 루피 기호(₹) 삭제 및 type 변경
@@ -57,6 +58,13 @@
 | 결정 : product_id 기준 img_link가 달라 중복으로 확인된 행은 삭제 처리함.
 | 근거 : img_link의 경우 지표 및 분석에 활용되지 않으며, 값 부풀림이 예상되어 중복 행 삭제함.
 | 한계 : 다른 컬럼과 동일하게 |와 같이 하나의 행에 데이터가 수집되어 있지 않아 전체적인 데이터 형식의 통일이 필요함.
+
+### (6) last_category column 생성
+| 이슈: category의 값에 ‘|’를 기준으로 최대 6개까지 분류가 나눠짐.
+| 결정: 제품을 유추할 수 있는 가장 마지막 분류 값만 last_category로 생성함.
+| 근거: 대분류 기준으로 보았을 때 분석 시 정확하게 어떤 제품군인지 알 수 없어 파악하기 용이한 마지막 분류로 생성함. 
+| 한계: 분석 시 해당 전처리 작업이 필수 작업에 해당하여 추후 DB상에서부터 각 분류마다 column이 나눠질 수 있는지 점검 필요.
+
 
 ## 4. 처리 후 검증
 - product_id B0B94JPY2N, B0BQRJ3C47의 rating_count 2건 Null
