@@ -299,11 +299,13 @@ product_name,
 last_category,
 actual_price,
   round(actual_price * (select inr_to_krw from db02.exchange_rate),1) as actual_price_krw,
+discounted_price,
+  round(discounted_price * (select inr_to_krw from db02.exchange_rate),1) as discounted_price_krw,
 rating,
 rating_count
 from db02.amazon_clean
 order by rating desc
 
 
-select category
+select *
 from db02.amazon
