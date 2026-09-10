@@ -546,12 +546,77 @@
 
 ## 3. 처리 결정과 근거
 
+### (1) profile.age=118 → 결측(NaN) 처리
+| 이슈 : age 컬럼에 논리적으로 불가능한 값(118세) 2175건이 존재하며, 이는 gender·income 결측 2175건과 정확히 일치하는 행 집합에서 발생함
+| 결정 : age=118 값을 NaN(결측)으로 변환
+| 근거 : age=118은 실제 연령이 아니라 정보 미제공 사용자를 나타내는 센티널 값으로 판단되며, gender·income과 동일 행에서 발생하는 구조적 결측 패턴이므로 결측으로 명시하는 것이 데이터의 실제 상태를 더 정확히 반영함
+| 한계 : 데이터 제공처의 센티널 처리 의도를 완전히 확정할 수는 없으며, age 컬럼의 dtype이 int64에서 float64로 변경됨
+
+### (2) transcript 자연키 중복 397건 → 유지
+| 이슈 : person, event, time, value 기준 완전 중복 397건(모두 event='offer completed')이 존재함
+| 결정 : 중복 행을 삭제하지 않고 원본 그대로 유지
+| 근거 : 중복 발생 원인(중복 로깅 vs 실제 반복 이벤트)이 확정되지 않은 상태에서 임의 삭제 시 정보 손실 위험이 있음
+| 한계 : 오퍼 완료 건수·reward 합계 등 집계 분석 시 이중 계산으로 인한 과대 추정 가능성이 있어 후속 분석에서 별도 유의 필요
+
+### (3) 이상치(portfolio reward/difficulty 등) → 유지
+| 이슈 : IQR 기준 portfolio.reward 20.00%, portfolio.difficulty 10.00%가 이상치로 탐지됨 (profile.age 이상치 12.79%는 (1) 처리로 결측 전환되어 별도 대상에서 제외)
+| 결정 : 탐지된 이상치를 제거·대체하지 않고 원본 값 유지
+| 근거 : portfolio는 전체 10건에 불과해 이상치 비율이 통계적으로 불안정하며, 임의 제거 시 표본이 과도하게 줄어듦
+| 한계 : reward/difficulty의 실제 이상치 여부는 오퍼 정책 등 도메인 기준 확인이 추가로 필요함
+
+### (4) profile gender/income 결측 2175건 → 유지
+| 이슈 : gender 12.79%, income 12.79% 결측이 존재하며 (1)의 age 결측과 동일 행에서 발생
+| 결정 : 결측치를 대체(imputation)하지 않고 원본 그대로 유지
+| 근거 : 결측이 무작위가 아닌 구조적 패턴(동일 행 집합)으로 나타나며, 임의 대체 시 편향 유입 우려가 있음
+| 한계 : 이후 gender/income을 활용하는 분석에서는 결측 제외(listwise deletion) 등 별도 처리가 필요함
 
 ## 4. 처리 후 검증
 
+- (1) profile.age=118 → NaN 처리 검증 (`eda_diagnostics.py` 로직과 동일한 방식으로 재계산)
+
+| 항목 | 처리 전 | 처리 후 |
+|---|---|---|
+| age 결측 개수 | 0건 | 2175건 |
+| age 결측률(%) | 0.00 | 12.79 |
+| age 결측 행 = gender·income 결측 행 일치 여부 | - | 일치 (True) |
+| age 유효건수 | 17000 | 14825 |
+| age 왜도 | 0.7619 | -0.0808 |
+| age IQR 이상치(%) | 12.79 | 0.00 |
+| age Z-score 이상치(%) | 0.00 | 0.00 |
+| age MAD 이상치(%) | 0.00 | 0.00 |
+| age 최소값/최대값 | 18 / 118 | 18 / 101 |
+
+- (2) transcript 자연키 중복 397건 → 변경 없음(원본 유지), 재확인 결과 동일하게 397건 존재
+- (3) portfolio 이상치(reward 20.00%, difficulty 10.00%) → 변경 없음(원본 유지)
+- (4) profile gender/income 결측 각 2175건(12.79%) → 변경 없음(원본 유지)
 
 ## 5. 기초통계
 
+### portfolio
+- reward/difficulty/duration 평균·중앙값·표준편차·왜도 ★
+- offer_type별 reward/difficulty 평균 비교(그룹별) ★
+- channels 채널 조합별 오퍼 개수 분포
+
+### profile
+- age/income 기초 통계량(평균/중앙값/표준편차/왜도) ★
+- age, income 분포 히스토그램/boxplot ★
+- gender별 age/income 그룹 비교(boxplot) ★
+- age-income 상관관계(산점도 및 상관계수)
+- became_member_on 기준 연도/월별 신규 가입자 수 추이(시계열) ★
+
+### transcript
+- event 유형별 건수 및 비율(offer received/viewed/completed, transaction) ★
+- time(경과 시간) 구간별 이벤트 발생 건수 추이(시계열) ★
+- transaction의 amount(결제 금액) 기초 통계량 및 분포 ★
+- offer completed의 reward(보상) 기초 통계량 및 분포
+- offer_id(portfolio.id)별 완료 건수 순위
+
+### 3개 파일 결합(조인) 기반
+- offer_type별 오퍼 완료율(offer received 대비 offer completed 비율) 비교 ★
+- gender·연령대별 오퍼 완료율 비교
+- income과 transaction amount 간 상관관계
+
+### 종료: 후보 제시 후 정지 → 사용자의 항목 선택 대기
 
 ## 6. 후속 권고
 
