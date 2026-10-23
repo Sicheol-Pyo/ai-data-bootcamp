@@ -1,2 +1,5 @@
 # Local Netlify folder
 .netlify
+
+# 학습 체크포인트 (파일당 100MB 초과)
+D052_BERTopic 토픽 모델링/sentiment_model/
